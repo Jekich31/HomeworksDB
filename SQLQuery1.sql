@@ -1,27 +1,76 @@
-CREATE TABLE Groups
-(
-Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-[Name] NVARCHAR(10) NOT NULL UNIQUE CHECK(LEN(TRIM([Name])) > 0),
-Rating INT NOT NULL CHECK(Rating BETWEEN 0 AND 5),
-[Year] INT NOT NULL CHECK([Year] BETWEEN 1 AND 5)
-);
-CREATE TABLE Departments
-(
-Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-Financing MONEY NOT NULL DEFAULT 0 CHECK(Financing>=0),
-[Name] NVARCHAR(100) NOT NULL UNIQUE CHECK(LEN(TRIM([Name])) > 0)
-);
-CREATE TABLE Faculties
-(
-Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-[Name] NVARCHAR(100) NOT NULL UNIQUE CHECK(LEN(TRIM([Name])) > 0)
-);
-CREATE TABLE Teachers
-(
-Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-EmploymentDate DATE NOT NULL CHECK(EmploymentDate>='1990-01-01'),
-[Name] NVARCHAR(max) NOT NULL CHECK(LEN(TRIM([Name])) > 0),
-Premium MONEY NOT NULL DEFAULT 0 CHECK(Premium >= 0),
-Salary MONEY NOT NULL CHECK (Salary>0),
-SurName NVARCHAR(Max) NOT NULL CHECK(LEN(TRIM(SurName)) > 0)
-);
+--CREATE TABLE Groups
+--(
+--Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+--[Name] NVARCHAR(10) NOT NULL UNIQUE CHECK(LEN(TRIM([Name])) > 0),
+--Rating INT NOT NULL CHECK(Rating BETWEEN 0 AND 5),
+--[Year] INT NOT NULL CHECK([Year] BETWEEN 1 AND 5)
+--);
+--CREATE TABLE Departments
+--(
+--Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+--Financing MONEY NOT NULL DEFAULT 0 CHECK(Financing>=0),
+--[Name] NVARCHAR(100) NOT NULL UNIQUE CHECK(LEN(TRIM([Name])) > 0)
+--);
+--CREATE TABLE Faculties
+--(
+--Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+--[Name] NVARCHAR(100) NOT NULL UNIQUE CHECK(LEN(TRIM([Name])) > 0)
+--);
+--CREATE TABLE Teachers
+--(
+--Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+--EmploymentDate DATE NOT NULL CHECK(EmploymentDate>='1990-01-01'),
+--[Name] NVARCHAR(max) NOT NULL CHECK(LEN(TRIM([Name])) > 0),
+--Premium MONEY NOT NULL DEFAULT 0 CHECK(Premium >= 0),
+--Salary MONEY NOT NULL CHECK (Salary>0),
+--SurName NVARCHAR(Max) NOT NULL CHECK(LEN(TRIM(SurName)) > 0)
+--);
+--INSERT INTO dbo.Faculties([Name]) 
+--VALUES
+--('Faculty of Science'),
+--('Faculty of Arts'),
+--('Faculty of Engineering'),
+--('Faculty of Medicine'),
+--('Faculty of Business');
+--SELECT *
+--FROM dbo.Faculties
+--ORDER BY Id DESC;
+--INSERT INTO dbo.Groups([Name], Rating, [Year])
+--VALUES
+--('Group A', 4, 2),
+--('Group B', 3, 1),
+--('Group C', 5, 3),
+--('Group D', 2, 4),
+--('Group E', 1, 5);
+--SELECT 
+--[Name] AS [Group Name], 
+--[Rating] AS [Group Rating]
+--FROM Groups;
+--INSERT INTO dbo.Teachers([Name], SurName, EmploymentDate, Salary, Premium)
+--VALUES
+--('John', 'Doe', '2010-05-15', 50000, 5000),
+--('Jane', 'Smith', '2012-08-20', 55000, 6000),
+--('Emily', 'Johnson', '2015-03-10', 48000, 4500),
+--('Michael', 'Brown', '2008-11-25', 62000, 7000),
+--('Sarah', 'Davis', '2013-01-30', 53000, 5500);
+--SELECT SurName, (Salary/Premium)*100 AS [Salary to Premium Ratio], (Salary/(Premium + Salary)) * 100 AS [Salary Percentage]
+--FROM Teachers;
+--SELECT 
+--    CONCAT('The dean of faculty ', [Name], ' is ', 'Alex Smith', '.') AS [Faculty Info]
+--FROM Faculties;
+--Select Surname from dbo.Teachers
+--where Salary > 1050;
+--INSERT INTO dbo.Departments(Financing, [Name])
+--VALUES
+--(10000, 'Department of Mathematics'),
+--(15000, 'Department of Physics'),
+--(20000, 'Department of Chemistry'),
+--(30000, 'Department of Biology'),
+--(40000, 'Department of Computer Science');
+--SELECT [Name] FROM dbo.Departments
+--WHERE Financing<11000 or Financing>25000;
+--SELECT [Name] FROM dbo.Faculties
+--WHERE [Name] != 'Computer Science';
+--Select [Name],Salary,Premium
+--FROM dbo.Teachers
+--WHERE Premium >160 OR Premium <550;
