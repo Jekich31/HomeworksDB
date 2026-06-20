@@ -1,76 +1,143 @@
---CREATE TABLE Groups
---(
---Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
---[Name] NVARCHAR(10) NOT NULL UNIQUE CHECK(LEN(TRIM([Name])) > 0),
---Rating INT NOT NULL CHECK(Rating BETWEEN 0 AND 5),
---[Year] INT NOT NULL CHECK([Year] BETWEEN 1 AND 5)
+--CREATE TABLE Faculties(
+--    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+--    Financing MONEY NOT NULL DEFAULT 0 CHECK(Financing >= 0),
+--    [Name] NVARCHAR(100) NOT NULL UNIQUE CHECK(LEN(TRIM([Name])) > 0)
 --);
---CREATE TABLE Departments
---(
---Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
---Financing MONEY NOT NULL DEFAULT 0 CHECK(Financing>=0),
---[Name] NVARCHAR(100) NOT NULL UNIQUE CHECK(LEN(TRIM([Name])) > 0)
+
+--CREATE TABLE Departments(
+--    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+--    Financing MONEY NOT NULL DEFAULT 0 CHECK(Financing >= 0),
+--    [Name] NVARCHAR(100) NOT NULL UNIQUE CHECK(LEN(TRIM([Name])) > 0),
+--    FacultyId INT NOT NULL FOREIGN KEY REFERENCES Faculties(Id)
 --);
---CREATE TABLE Faculties
---(
---Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
---[Name] NVARCHAR(100) NOT NULL UNIQUE CHECK(LEN(TRIM([Name])) > 0)
+
+--CREATE TABLE Groups(
+--    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+--    [Name] NVARCHAR(10) NOT NULL UNIQUE CHECK(LEN(TRIM([Name])) > 0),
+--    [Year] INT NOT NULL CHECK([Year] BETWEEN 1 AND 5),
+--    DepartmentId INT NOT NULL FOREIGN KEY REFERENCES Departments(Id)
 --);
---CREATE TABLE Teachers
---(
---Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
---EmploymentDate DATE NOT NULL CHECK(EmploymentDate>='1990-01-01'),
---[Name] NVARCHAR(max) NOT NULL CHECK(LEN(TRIM([Name])) > 0),
---Premium MONEY NOT NULL DEFAULT 0 CHECK(Premium >= 0),
---Salary MONEY NOT NULL CHECK (Salary>0),
---SurName NVARCHAR(Max) NOT NULL CHECK(LEN(TRIM(SurName)) > 0)
+
+--CREATE TABLE Curators(
+--    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+--    [Name] NVARCHAR(MAX) NOT NULL CHECK(LEN(TRIM([Name])) > 0),
+--    Surname NVARCHAR(MAX) NOT NULL CHECK(LEN(TRIM(Surname)) > 0)
 --);
---INSERT INTO dbo.Faculties([Name]) 
---VALUES
---('Faculty of Science'),
---('Faculty of Arts'),
---('Faculty of Engineering'),
---('Faculty of Medicine'),
---('Faculty of Business');
---SELECT *
---FROM dbo.Faculties
---ORDER BY Id DESC;
---INSERT INTO dbo.Groups([Name], Rating, [Year])
---VALUES
---('Group A', 4, 2),
---('Group B', 3, 1),
---('Group C', 5, 3),
---('Group D', 2, 4),
---('Group E', 1, 5);
---SELECT 
---[Name] AS [Group Name], 
---[Rating] AS [Group Rating]
---FROM Groups;
---INSERT INTO dbo.Teachers([Name], SurName, EmploymentDate, Salary, Premium)
---VALUES
---('John', 'Doe', '2010-05-15', 50000, 5000),
---('Jane', 'Smith', '2012-08-20', 55000, 6000),
---('Emily', 'Johnson', '2015-03-10', 48000, 4500),
---('Michael', 'Brown', '2008-11-25', 62000, 7000),
---('Sarah', 'Davis', '2013-01-30', 53000, 5500);
---SELECT SurName, (Salary/Premium)*100 AS [Salary to Premium Ratio], (Salary/(Premium + Salary)) * 100 AS [Salary Percentage]
---FROM Teachers;
---SELECT 
---    CONCAT('The dean of faculty ', [Name], ' is ', 'Alex Smith', '.') AS [Faculty Info]
---FROM Faculties;
---Select Surname from dbo.Teachers
---where Salary > 1050;
---INSERT INTO dbo.Departments(Financing, [Name])
---VALUES
---(10000, 'Department of Mathematics'),
---(15000, 'Department of Physics'),
---(20000, 'Department of Chemistry'),
---(30000, 'Department of Biology'),
---(40000, 'Department of Computer Science');
---SELECT [Name] FROM dbo.Departments
---WHERE Financing<11000 or Financing>25000;
---SELECT [Name] FROM dbo.Faculties
---WHERE [Name] != 'Computer Science';
---Select [Name],Salary,Premium
---FROM dbo.Teachers
---WHERE Premium >160 OR Premium <550;
+
+--CREATE TABLE GroupsCurators(
+--    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+--    CuratorId INT NOT NULL FOREIGN KEY REFERENCES Curators(Id),
+--    GroupId INT NOT NULL FOREIGN KEY REFERENCES Groups(Id)
+--);
+
+--CREATE TABLE Subjects(
+--    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+--    [Name] NVARCHAR(100) NOT NULL UNIQUE CHECK(LEN(TRIM([Name])) > 0)
+--);
+
+--CREATE TABLE Teachers(
+--    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+--    [Name] NVARCHAR(MAX) NOT NULL CHECK(LEN(TRIM([Name])) > 0),
+--    Salary MONEY NOT NULL CHECK(Salary > 0),
+--    Surname NVARCHAR(MAX) NOT NULL CHECK(LEN(TRIM(Surname)) > 0)
+--);
+
+--CREATE TABLE Lectures(
+--    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+--    LectureRoom NVARCHAR(MAX) NOT NULL CHECK(LEN(TRIM(LectureRoom)) > 0),
+--    SubjectId INT NOT NULL FOREIGN KEY REFERENCES Subjects(Id),
+--    TeacherId INT NOT NULL FOREIGN KEY REFERENCES Teachers(Id)
+--);
+
+--CREATE TABLE GroupsLectures(
+--    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+--    GroupId INT NOT NULL FOREIGN KEY REFERENCES Groups(Id),
+--    LectureId INT NOT NULL FOREIGN KEY REFERENCES Lectures(Id)
+--);
+--INSERT INTO Faculties ([Name], Financing) VALUES 
+--('Факультет комп''ютерних наук', 500000.00),
+--('Факультет кібербезпеки', 420000.00),
+--('Факультет прикладної математики', 300000.00);
+
+--INSERT INTO Departments ([Name], Financing, FacultyId) VALUES 
+--('Кафедра програмної інженерії', 150000.00, 1),
+--('Кафедра штучного інтелекту', 180000.00, 1),
+--('Кафедра криптографії', 120000.00, 2),
+--('Кафедра вищої математики', 90000.00, 3);
+
+--INSERT INTO Groups ([Name], [Year], DepartmentId) VALUES 
+--('ПІ-21', 2, 1),
+--('ПІ-41', 4, 1),
+--('ШІ-11', 1, 2),
+--('КБ-32', 3, 3);
+
+--INSERT INTO Curators ([Name], Surname) VALUES 
+--('Олена', 'Коваленко'),
+--('Максим', 'Мороз'),
+--('Ірина', 'Ткаченко');
+
+--INSERT INTO GroupsCurators (CuratorId, GroupId) VALUES 
+--(1, 1),
+--(2, 2),
+--(3, 3),
+--(1, 4);
+
+--INSERT INTO Subjects ([Name]) VALUES 
+--('Бази даних'),
+--('Об''єктно-орієнтоване програмування'),
+--('Алгоритми та структури даних'),
+--('Методи захисту інформації');
+
+--INSERT INTO Teachers ([Name], Surname, Salary) VALUES 
+--('Андрій', 'Петренко', 25000.00),
+--('Світлана', 'Мельник', 28000.00),
+--('Дмитро', 'Шевченко', 31000.00);
+
+--INSERT INTO Lectures (LectureRoom, SubjectId, TeacherId) VALUES 
+--('Аудиторія 204', 1, 1),
+--('Аудиторія 405 (комп. клас)', 2, 2),
+--('Лекційна зала 1', 3, 3),
+--('Аудиторія 312', 4, 1);
+
+--INSERT INTO GroupsLectures (GroupId, LectureId) VALUES 
+--(1, 1),
+--(1, 2),
+--(2, 2),
+--(3, 3),
+--(4, 4);
+SELECT 
+    T.Surname AS TeacherSurname, 
+    T.[Name] AS TeacherName, 
+    G.[Name] AS GroupName
+FROM Teachers T
+CROSS JOIN Groups G;
+
+SELECT F.[Name] AS FacultyName
+FROM Faculties F
+JOIN Departments D ON F.Id = D.FacultyId
+GROUP BY F.Id, F.[Name], F.Financing
+HAVING SUM(D.Financing) > F.Financing;
+
+SELECT 
+    C.Surname AS CuratorSurname, 
+    G.[Name] AS GroupName
+FROM Curators C
+JOIN GroupsCurators GC ON C.Id = GC.CuratorId
+JOIN Groups G ON GC.GroupId = G.Id;
+
+SELECT DISTINCT T.Surname AS TeacherSurname
+FROM Teachers T
+JOIN Lectures L ON T.Id = L.TeacherId
+JOIN GroupsLectures GL ON L.Id = GL.LectureId
+JOIN Groups G ON GL.GroupId = G.Id
+WHERE G.[Name] = 'P107';
+
+SELECT DISTINCT 
+    T.Surname AS TeacherSurname, 
+    F.[Name] AS FacultyName
+FROM Teachers T
+JOIN Lectures L ON T.Id = L.TeacherId
+JOIN GroupsLectures GL ON L.Id = GL.LectureId
+JOIN Groups G ON GL.GroupId = G.Id
+JOIN Departments D ON G.DepartmentId = D.Id
+JOIN Faculties F ON D.FacultyId = F.Id;
