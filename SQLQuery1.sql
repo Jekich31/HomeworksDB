@@ -105,39 +105,91 @@
 --(2, 2),
 --(3, 3),
 --(4, 4);
+--SELECT 
+--    T.Surname AS TeacherSurname, 
+--    T.[Name] AS TeacherName, 
+--    G.[Name] AS GroupName
+--FROM Teachers T
+--CROSS JOIN Groups G;
+
+--SELECT F.[Name] AS FacultyName
+--FROM Faculties F
+--JOIN Departments D ON F.Id = D.FacultyId
+--GROUP BY F.Id, F.[Name], F.Financing
+--HAVING SUM(D.Financing) > F.Financing;
+
+--SELECT 
+--    C.Surname AS CuratorSurname, 
+--    G.[Name] AS GroupName
+--FROM Curators C
+--JOIN GroupsCurators GC ON C.Id = GC.CuratorId
+--JOIN Groups G ON GC.GroupId = G.Id;
+
+--SELECT DISTINCT T.Surname AS TeacherSurname
+--FROM Teachers T
+--JOIN Lectures L ON T.Id = L.TeacherId
+--JOIN GroupsLectures GL ON L.Id = GL.LectureId
+--JOIN Groups G ON GL.GroupId = G.Id
+--WHERE G.[Name] = 'P107';
+
+--SELECT DISTINCT 
+--    T.Surname AS TeacherSurname, 
+--    F.[Name] AS FacultyName
+--FROM Teachers T
+--JOIN Lectures L ON T.Id = L.TeacherId
+--JOIN GroupsLectures GL ON L.Id = GL.LectureId
+--JOIN Groups G ON GL.GroupId = G.Id
+--JOIN Departments D ON G.DepartmentId = D.Id
+--JOIN Faculties F ON D.FacultyId = F.Id;
+--ALTER TABLE Lectures 
+--ADD DayOfWeek INT NOT NULL DEFAULT 1 CHECK(DayOfWeek BETWEEN 1 AND 7);
+
+
+--SELECT COUNT(DISTINCT L.TeacherId) AS TeachersCount
+--FROM Teachers T
+--JOIN Lectures L ON T.Id = L.TeacherId
+--JOIN GroupsLectures GL ON L.Id = GL.LectureId
+--JOIN Groups G ON GL.GroupId = G.Id
+--JOIN Departments D ON G.DepartmentId = D.Id
+--WHERE D.[Name] = N'Software Development';
+
+--SELECT COUNT(L.Id) AS LecturesCount
+--FROM Lectures L
+--JOIN Teachers T ON L.TeacherId = T.Id
+--WHERE T.[Name] = N'Dave' AND T.Surname = N'McQueen';
+
+--SELECT COUNT(Id) AS LecturesCount
+--FROM Lectures
+--WHERE LectureRoom = N'D201';
+
+--SELECT LectureRoom, COUNT(Id) AS LecturesCount
+--FROM Lectures
+--GROUP BY LectureRoom;
+
+--SELECT COUNT(DISTINCT GL.GroupId) AS TotalGroups
+--FROM GroupsLectures GL
+--JOIN Lectures L ON GL.LectureId = L.Id
+--JOIN Teachers T ON L.TeacherId = T.Id
+--WHERE T.[Name] = N'Jack' AND T.Surname = N'Underhill';
+
+--SELECT LectureRoom, COUNT(Id) AS LecturesCount
+--FROM Lectures
+--GROUP BY LectureRoom;
+
+--SELECT AVG(T.Salary) AS AverageSalary
+--FROM Teachers T
+--JOIN Lectures L ON T.Id = L.TeacherId
+--JOIN GroupsLectures GL ON L.Id = GL.LectureId
+--JOIN Groups G ON GL.GroupId = G.Id
+--JOIN Departments D ON G.DepartmentId = D.Id
+--JOIN Faculties F ON D.FacultyId = F.Id
+--WHERE F.[Name] = N'Computer Science';
+
 SELECT 
-    T.Surname AS TeacherSurname, 
-    T.[Name] AS TeacherName, 
-    G.[Name] AS GroupName
-FROM Teachers T
-CROSS JOIN Groups G;
-
-SELECT F.[Name] AS FacultyName
-FROM Faculties F
-JOIN Departments D ON F.Id = D.FacultyId
-GROUP BY F.Id, F.[Name], F.Financing
-HAVING SUM(D.Financing) > F.Financing;
-
-SELECT 
-    C.Surname AS CuratorSurname, 
-    G.[Name] AS GroupName
-FROM Curators C
-JOIN GroupsCurators GC ON C.Id = GC.CuratorId
-JOIN Groups G ON GC.GroupId = G.Id;
-
-SELECT DISTINCT T.Surname AS TeacherSurname
-FROM Teachers T
-JOIN Lectures L ON T.Id = L.TeacherId
-JOIN GroupsLectures GL ON L.Id = GL.LectureId
-JOIN Groups G ON GL.GroupId = G.Id
-WHERE G.[Name] = 'P107';
-
-SELECT DISTINCT 
-    T.Surname AS TeacherSurname, 
-    F.[Name] AS FacultyName
-FROM Teachers T
-JOIN Lectures L ON T.Id = L.TeacherId
-JOIN GroupsLectures GL ON L.Id = GL.LectureId
-JOIN Groups G ON GL.GroupId = G.Id
-JOIN Departments D ON G.DepartmentId = D.Id
-JOIN Faculties F ON D.FacultyId = F.Id;
+    MIN(LecturesPerGroup) AS MinLectures, 
+    MAX(LecturesPerGroup) AS MaxLectures
+FROM (
+    SELECT COUNT(LectureId) AS LecturesPerGroup
+    FROM GroupsLectures
+    GROUP BY GroupId
+) AS GroupStats;
